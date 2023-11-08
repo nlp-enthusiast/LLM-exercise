@@ -6,6 +6,7 @@
 --rank_id 2,3 \ 
 --model_name_or_path ./llm-models/chatglm2-6
 `
+
 微调完成后保存在save文件夹
 
 merge_lora.py 可以调用微调后的模型
