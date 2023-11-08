@@ -12,7 +12,7 @@ class GLMPromptDataSet(Dataset):
 
                 sample = json.loads(line.strip())
                 skip_flag = False
-                src_tokens = tokenizer.build_single_message("user", "", sample["instruction"] + sample["input"],)
+                src_tokens = tokenizer.build_single_message("user", "", sample["instruction"] + sample["input"], )
                 src_tokens.extend([tokenizer.get_command("<|assistant|>")])
                 if len(src_tokens) > max_src_len:
                     # 当输入内容超长时，随向后截断，但保留“\n\n答：”内容
@@ -26,10 +26,10 @@ class GLMPromptDataSet(Dataset):
                     tgt_tokens = tgt_tokens[:max_tgt_len]
                     skip_flag = True
 
-                tokens = src_tokens + tgt_tokens + [tokenizer.eos_token]
-                assert len(tokens) <= max_len
-                # ChatGLM2需要增加[gMASK]、sop两个标记
-                input_ids = tokenizer.convert_tokens_to_ids(tokens)
+                input_ids = src_tokens + tokenizer.convert_tokens_to_ids(tgt_tokens) + [
+                    tokenizer.eos_token_id]
+                assert len(input_ids) <= max_len
+                input_ids = tokenizer.get_prefix_tokens()+input_ids
                 context_length = len(src_tokens) + 2
                 labels = [-100] * context_length + input_ids[context_length:]
 
