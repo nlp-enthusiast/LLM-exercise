@@ -60,14 +60,14 @@ class GLMPromptDataSet(Dataset):
                 sample = json.loads(line.strip())
                 skip_flag = False
                 src_tokens = tokenizer.build_single_message("user", "", sample["instruction"] + sample["input"], )
-                src_tokens.extend([tokenizer.get_command("<|assistant|>")]+tokenizer.encode("\n\n"))
+                src_tokens.extend([tokenizer.get_command("<|assistant|>")])
                 if len(src_tokens) > max_src_len:
                     # 当输入内容超长时，随向后截断，但保留“\n\n答：”内容
                     src_tokens = src_tokens[:max_src_len - 4] + src_tokens[-4:]
                     skip_flag = True
 
                 max_tgt_len = max_len - 3 - len(src_tokens)
-                tgt_tokens = tokenizer.tokenize(sample["output"])
+                tgt_tokens = tokenizer.tokenize("\n"+sample["output"])
 
                 if len(tgt_tokens) > max_tgt_len:
                     tgt_tokens = tgt_tokens[:max_tgt_len]
