@@ -23,7 +23,7 @@ with open("train-general.txt") as f:
             temp["instruction"] =instruction
             temp["input"] = item["question"]
             temp["output"] = ans
-            train_data.append(temp)dsdads
+            train_data.append(temp)
 
 with open("train-base.txt") as f:
     data = f.readlines()
