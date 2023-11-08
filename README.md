@@ -13,4 +13,4 @@
 merge_lora.py 可以调用微调后的模型
 微调后效果如下：
 
-![image](image/图片1.png)
+![image](image/图片2.png)
