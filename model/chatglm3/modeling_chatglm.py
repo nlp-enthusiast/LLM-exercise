@@ -999,7 +999,6 @@ class ChatGLMForConditionalGeneration(ChatGLMPreTrainedModel):
     def process_response(self, output, history):
         content = ""
         history = deepcopy(history)
-        print(output.split("<|assistant|>"))
         for response in output.split("<|assistant|>"):
             metadata, content = response.split("\n", maxsplit=1)
             if not metadata.strip():
