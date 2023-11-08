@@ -8,7 +8,9 @@ sh scripts/chatglm-lora-wukong.sh
 
 微调完成后保存在save文件夹
 
-demo.sh 可以调用微调后的模型
+ `sh demo.sh`
+
+可以调用微调后的模型
 微调后效果如下：
 
 ![image](image/图片2.png)
