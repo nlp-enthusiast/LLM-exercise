@@ -1,6 +1,6 @@
 import torch
-from .GLM2Dataset import GLM2PromptDataSet
-DateMode={"glm2":GLM2PromptDataSet }
+from .GLMDataset import GLMPromptDataSet
+DateMode={"glm2":GLMPromptDataSet }
 
 class DataCollator(object):
     def __init__(self, tokenizer):

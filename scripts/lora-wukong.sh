@@ -1,12 +1,14 @@
 
 save_dir=./save/sunwukong
-mkdir -p $save_dir
+model_mode="glm3"
+model_name_or_path="./llm-models/chatglm3-6b"
 
+mkdir -p $save_dir
 python -m torch.distributed.launch --nproc_per_node=2 train.py \
 --rank_id 2,3 \
---model_mode "glm2" \
+--model_mode $model_mode \
 --train_path "./corpus/sunwukong/train.txt" \
---model_name_or_path "./llm-models/chatglm3-6b" \
+--model_name_or_path $model_name_or_path  \
 --train_type "lora" \
 --epochs 3 \
 --per_device_train_batch_size 4 \

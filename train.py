@@ -17,7 +17,7 @@ def parse_args():
     parser.add_argument("--local-rank", type=int, default=-1)
     parser.add_argument("--global_rank", type=int, default=-1)
     parser.add_argument("--model_name_or_path", type=str, help="", required=True)
-    parser.add_argument("--model_mode", type=str, choices=["glm2"], help="", default="glm2")
+    parser.add_argument("--model_mode", type=str, choices=["glm3"], help="", default="glm3")
     # data
     parser.add_argument("--train_path", type=str, default="./corpus/sunwukong/train.txt", help="")
     parser.add_argument("--is_skip", action="store_true", help="如果长度过长跳过该样本")
@@ -32,7 +32,7 @@ def parse_args():
     parser.add_argument("--lr", type=float, default=5e-5, help="")
     parser.add_argument("--save_model_step", type=int, default=1000, help="")
     parser.add_argument("--show_loss_step", type=int, default=10, help="")
-    parser.add_argument("--output_dir", type=str, default="./save", help="")
+    parser.add_argument("--save_dir", type=str, default="./save", help="")
     parser.add_argument("--rank_id", type=str, default="1,2", help="指定gpu编号")
     parser.add_argument("--rank_num", type=int, default=1)
     # LoRA
@@ -101,7 +101,7 @@ def main():
         tb_write = SummaryWriter()
 
     # load data
-    train_dataset = DateMode[args.model_mode](args.train_path, tokenizer, args.max_len, args.max_src_len, args.is_skip)
+    train_dataset = DateMode["glm2"](args.train_path, tokenizer, args.max_len, args.max_src_len, args.is_skip)
     log_rank_0(f'''input id example:\n{train_dataset[0]["input_ids"]}\n{train_dataset[0]["labels"]}''',
                args.global_rank)
     log_rank_0(
@@ -130,16 +130,6 @@ def main():
     log_rank_0(model, args.global_rank)
     print_trainable_parameters(model)
 
-    # # gradient_checkpointing
-    # if args.gradient_checkpointing:
-    #     model.gradient_checkpointing_enable()
-    #     if hasattr(model, "enable_input_require_grads"):
-    #         model.enable_input_require_grads()
-    #     else:
-    #         def make_inputs_require_grad(module, input, output):
-    #             output.requires_grad_(True)
-    #
-    #         model.get_input_embeddings().register_forward_hook(make_inputs_require_grad)
 
     optimizer = Adam(model.parameters(),lr=args.lr)
     tr_loss, logging_loss, min_loss = 0.0, 0.0, 0.0
@@ -176,10 +166,10 @@ def main():
                 # save model
                 if args.save_model_step is not None and global_step % args.save_model_step == 0:
                     if args.global_rank <= 0:
-                        save_model(model, tokenizer, args.output_dir, f"epoch-{epoch + 1}-step-{global_step}")
+                        save_model(model, tokenizer, args.save_dir, f"epoch-{epoch + 1}-step-{global_step}")
                     model.train()
 
         if args.global_rank <= 0:
-            save_model(model, tokenizer, args.output_dir, f"epoch-{epoch + 1}-step-{global_step}")
+            save_model(model, tokenizer, args.save_dir, f"epoch-{epoch + 1}-step-{global_step}")
 if __name__ == '__main__':
     main()
