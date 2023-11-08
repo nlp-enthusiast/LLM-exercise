@@ -1,11 +1,7 @@
----
-library_name: peft
-base_model: ./llm-models/chatglm2-6b
----
+# 用于大模型微调实践的项目
 
-# Model Card for Model ID
-
-<!-- Provide a quick summary of what the model is/does. -->
+目前可以通过以下命令实现chatglm2微调为孙悟空的语气：
+'x' python -m torch.distributed.launch --nproc_per_node=2 train.py --rank_id 2,3 --model_name_or_path ./llm-models/chatglm2-6
 
 
 
